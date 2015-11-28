@@ -177,6 +177,10 @@ class DockerObject:
     def display_time_created(self):
         return humanize.naturaltime(self.created)
 
+    def display_formal_time_created(self):
+        # http://tools.ietf.org/html/rfc2822.html#section-3.3
+        return self.created.strftime("%d %b %Y, %H:%M:%S")
+
     def inspect(self):
         raise NotImplementedError()
 
@@ -232,6 +236,20 @@ class DockerImage(DockerObject):
         if cmd:
             return " ".join(cmd)
         return ""
+
+    @property
+    def size(self):
+        """
+        Size of all layers in bytes
+
+        :return: int
+        """
+        return self.data["VirtualSize"]
+
+    @property
+    def labels(self):
+        labels = self.data["Labels"]
+        return labels
 
     @property
     def names(self):
